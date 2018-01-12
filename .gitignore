@@ -1,0 +1,17 @@
+#eclipse settings file
+.settings
+#eclipse settings file
+.classpath
+WebContent/WEB-INF/classes
+#eclipse project file
+.project
+build
+out
+.idea
+sbilm-fx-web.iml
+
+
+#python
+__pycache__/
+*.py[cod]
+*$py.class
