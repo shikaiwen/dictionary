@@ -1,37 +1,38 @@
 
 # coding:utf-8
 
-
+#https://www.zhihu.com/question/25566731
 
 from _functools import reduce
 from builtins import str
-from lxml import etree
-from openpyxl.xml.constants import MAX_ROW
-from pyquery import PyQuery as pq
 import json
 import logging
-import openpyxl
-import openpyxl
+import os
 import re
-import requests
+import sqlite3
 import sys
 import unittest
 import urllib
-import sqlite3
+
+from lxml import etree
 import lxml
-import os
+import openpyxl
+import openpyxl
+from openpyxl.xml.constants import MAX_ROW
+from pyquery import PyQuery as pq
+import requests
+
 from db import DB
+
+
 # print(lxml.__file__)
-
-
 try:
     import http.client as http_client
 except ImportError:
     # Python 2
     import httplib as http_client
 http_client.HTTPConnection.debuglevel = 1
-
-# You must initialize logging, otherwise you'll not see debug output.
+ 
 logging.basicConfig()
 logging.getLogger().setLevel(logging.DEBUG)
 requests_log = logging.getLogger("requests.packages.urllib3")
@@ -60,28 +61,40 @@ headers = {"Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image
 # url = "https://dict.hjenglish.com/services/simpleExplain/jp_simpleExplain.ashx?type=jc&w=";
 # resp.status_code == 200
 
+# def doIt(x):
+#     x["level"]= 3
+#     return x
+# dlist = [{"id":1},{"id":2}]
+# print(list(map(doIt, dlist)))
+# print(dlist)
+# exit()
+
+
 def getquerywordlist():
     wb = openpyxl.load_workbook('C:/Users/shikw/Desktop/samples/jpword.xlsx')
 
-    sheet1 = wb.get_sheet_by_name('Sheet1')
-    sheet2 = wb.get_sheet_by_name('Sheet2')
+    level3Sheet= wb.get_sheet_by_name('Sheet1')
+    level1Sheet = wb.get_sheet_by_name('Sheet2')
+    querySheetArr = [level3Sheet, level1Sheet]
+    resultArr = [None] * len(querySheetArr)
      
-    maxrow = sheet1.max_row
-    maxcol = sheet1.max_column
+    for i in range(0,len(querySheetArr)):
+        wordlist = []
+        sheetvar = querySheetArr[i]
+        maxrow = sheetvar.max_row
+        maxcol = sheetvar.max_column
+        
+        for r in range(0,maxrow):
+            rowdata = [None]*maxcol
+            for c in range(0,maxcol):
+                rowdata[c] = (sheetvar.cell(row=r+1,column=c+1).value or "")
+            wordlist.append(rowdata)
+                
+        resultArr[i] = wordlist
     
-    wordlist = []
-    for r in range(1,maxrow):
-        word = (sheet1.cell(row=r,column=1).value or "")
-        if(word == ""): 
-            continue
-        else:
-            wordlist.append(word)
-    
-    return wordlist
+    return resultArr
 
-mm = [x  for x in getquerywordlist() if( x!="" and x.find("，")!=-1)]
-print(mm)
-exit()
+
 
 def loadfromnet(wordlist):
     
@@ -89,11 +102,11 @@ def loadfromnet(wordlist):
     replaceArr = ["content","IfHasScb","hjd_langs","WordId","FromLang","ToLang"]
     for i in range(0,len(wordlist)-1):
         word = wordlist[i]
-        resp = requests.post('https://dict.hjenglish.com/services/simpleExplain/jp_simpleExplain.ashx?type=jc&w='+word,headers= headers)
-    
+        
+        url = 'https://dict.hjenglish.com/services/simpleExplain/jp_simpleExplain.ashx?type=jc&w='+word
+        resp = doRequest(url, headers)
         if(resp.status_code != 200):
             sys.exit("http request 异常" +resp.request)
-            return
         
         content = resp.text
         needed = content[content.find("{"): (content.rfind("}")+1) ]
@@ -111,12 +124,47 @@ def loadfromnet(wordlist):
         wordinfolist.append(wordinfo)
     return wordinfolist
     
+    
+def doRequest(url,headers):
+     resp = requests.post(url,headers= headers)
+     return resp
+
+
 db = DB()
-# db.exesql("delete from jp_word")
-wordlist = getquerywordlist()
-loadedwordinfolist = loadfromnet(wordlist)
-db.saveWordList(loadedwordinfolist)
+db.exesql("delete from jp_word")
+db.exesql("delete from jp_raw_word")
+
+wordlistarr = getquerywordlist()
+
+wordlistlevel3raw = wordlistarr[0]
+db.saveRawTableData(wordlistlevel3raw)
+wordlistlevel3 = list(map(lambda x:x[0], wordlistlevel3raw))[1:]
+commword = [x  for x in wordlistlevel3 if( x!="" and x.find("，")!=-1)]
+for i in range(0,len(commword)):
+    wordlistlevel3.extend(commword[i].split("，"))
+loadedwordinfolist1 = loadfromnet(list(set(wordlistlevel3)))
+for i in range(0,len(loadedwordinfolist1)):
+    loadedwordinfolist1[i]["level"] = 3
+db.saveWordList(loadedwordinfolist1)
+
+
+
+wordlistlevel1raw = wordlistarr[1]
+
+db.saveRawTableData(wordlistlevel1raw)
+
+wordlistlevel1 = list(map(lambda x:x[0], wordlistlevel1raw))[1:]
+
+commword = [x  for x in wordlistlevel1 if( x!="" and x.find("，")!=-1)]
+for i in range(0,len(commword)):
+    wordlistlevel1.extend(commword[i].split("，"))
+    
+loadedwordinfolist1 = loadfromnet(list(set(wordlistlevel1)))
+    
+for i in range(0,len(loadedwordinfolist1)):
+    loadedwordinfolist1[i]["level"] = 1
+
+db.saveWordList(loadedwordinfolist1)
+
 # neededHtml = xhr.substr(content.indexOf("{"),content.lastIndexOf("}") - xhr.indexOf("{") +1)
-#     
-# 
 

@@ -30,6 +30,18 @@ class DB(object):
         conn.commit()
         conn.close()
         
+    def saveRawTableData(self, listdata):
+        dbsql = """
+            insert into jp_raw_word values(NULL,?,?,?,?)
+        """        
+        conn = self.getconn()
+        c = conn.cursor()
+        
+        for t in listdata:
+            c.execute(dbsql , t)
+        conn.commit()
+        conn.close()
+        
     def saveWordList(self, listdata):
 #         // word(单词) jm(英文假名) roma(日语读音) sd(声调) fyf(说明内容，用换行符号分割)
         dbsql = """
@@ -41,10 +53,10 @@ class DB(object):
         orderedlist = []
         for i in range(0,len(listdata)):
             dict = listdata[i]
-            orderedlist.append((dict["word"], dict["jm"], dict["roma"], dict["sd"], dict["fyf"] ))
+            orderedlist.append((dict["word"], dict["jm"], dict["roma"], dict["sd"], dict["fyf"],dict["level"]  ))
         
         for t in orderedlist:
-            c.execute("insert into jp_word('word','jm','roma','sd','fyf') values(?,?,?,?,?)" , t)
+            c.execute("insert into jp_word('word','jm','roma','sd','fyf','level') values(?,?,?,?,?,?)" , t)
         conn.commit()
         conn.close()
         
