@@ -1,3 +1,4 @@
+# coding:utf-8
 from __future__ import print_function
 import httplib2
 import os
@@ -9,7 +10,7 @@ from oauth2client.file import Storage
 
 import io
 from googleapiclient.http import MediaIoBaseDownload
-
+from googleapiclient.discovery import build 
 
 # https://developers.google.com/drive/v3/web/manage-downloads#downloading_google_documents
 # https://developers.google.com/apis-explorer/#p/drive/v3/
@@ -17,7 +18,7 @@ from googleapiclient.http import MediaIoBaseDownload
 
 # https://developers.google.com/identity/protocols/googlescopes
 # https://developers.google.com/identity/protocols/OAuth2WebServer
-
+# https://developers.google.com/api-client-library/javascript/reference/referencedocs#gapiclientrequestargs
 try:
     import argparse
     flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
@@ -32,6 +33,9 @@ CLIENT_SECRET_FILE = 'client_secret.json'
 APPLICATION_NAME = 'Drive API Python Quickstart'
 
 
+    
+    
+
 def get_credentials():
     """Gets valid user credentials from storage.
 
@@ -45,8 +49,7 @@ def get_credentials():
     credential_dir = os.path.join(home_dir, '.credentials')
     if not os.path.exists(credential_dir):
         os.makedirs(credential_dir)
-    credential_path = os.path.join(credential_dir,
-                                   'drive-python-quickstart.json')
+    credential_path = os.path.join(credential_dir,'drive-python-quickstart.json')
 
     store = Storage(credential_path)
     credentials = store.get()
@@ -61,8 +64,9 @@ def get_credentials():
         print('Storing credentials to ' + credential_path)
     return credentials
 
-from googleapiclient.discovery import build 
-def main():
+
+
+def gettodayword():
     """Shows basic usage of the Google Drive API.
 
     Creates a Google Drive API service object and outputs the names and IDs
@@ -82,8 +86,7 @@ def main():
     
     fname = "jpword-2018/02/01.txt"
     wantlist = list(filter(lambda x: x["name"] == fname ,results.get('files')))
-    
-    
+    todayStr = ""
     if(len(wantlist) > 0):
         todayfile = wantlist[0]
         contentobj = service.files().get(fileId=todayfile["id"])
@@ -95,15 +98,10 @@ def main():
         done = False
         while done is False:
             status, done = downloader.next_chunk()
-            print("Download %d%%." % int(status.progress() * 100))        
-        aa = fh.getvalue().decode("utf-8")
-        print(aa)
-    if not items:
-        print('No files found.')
-    else:
-        print('Files:')
-        for item in items:
-            print('{0} ({1})'.format(item['name'], item['id']))
+#            print("Download %d%%." % int(status.progress() * 100))        
+        
+    todayStr = fh.getvalue().decode("utf-8")
+    return todayStr
 
 if __name__ == '__main__':
-    main()
+    gettodayword()
