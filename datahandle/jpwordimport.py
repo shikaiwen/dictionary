@@ -29,7 +29,7 @@ import unicodedata
 import threading
 
 """
-    引用dll无法加载时，将dll拷贝到 python/site-packages下去
+    引用dll无法加载时，将dll拷贝到 python/Lib/site-packages下去
 """
 
 # print(lxml.__file__)

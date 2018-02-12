@@ -5,12 +5,12 @@ from scrapper import Scrapper
 from db import DB 
 import time
 
-class UrlFetcherTask(threading.Thread):
+class TaskUrlFetcher(threading.Thread):
     
     num = 1
     
     def __init__(self, rooturl):
-        super(UrlFetcherTask, self).__init__()
+        super(TaskUrlFetcher, self).__init__()
         self.rooturl = rooturl
     
     def run(self):
@@ -30,9 +30,9 @@ class UrlFetcherTask(threading.Thread):
 
 
 if __name__ == '__main__':
-    a = UrlFetcherTask("")
-    b = UrlFetcherTask("")
-    UrlFetcherTask.num = 8
+    a = TaskUrlFetcher("")
+    b = TaskUrlFetcher("")
+    TaskUrlFetcher.num = 8
     a.num = 5
     print(str(a.num) + ":" + str(b.num) )
 #     url = "https://qiita.com/konnyakmannan/items/2f0e3f00137db10f56a7#%E3%82%B5%E3%83%96%E3%82%AF%E3%83%A9%E3%82%B9%E3%82%92%E4%BD%9C%E3%82%8B"

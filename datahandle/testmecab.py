@@ -5,7 +5,15 @@ import MeCab
 import sys
 import string
 
-sentence = "太郎はこの本を二郎を見た女性に渡した。"
+# 安装步骤
+# 1 Mecab地址，安装时选择utf8，http://taku910.github.io/mecab/#install-windows
+# 2 太坑了，官方没有说明windows版本的安装方式，自己用 pip search mecab, 搜索，找到windows版本安装
+
+# C:\Program Files (x86)\MeCab\bin
+
+
+# sentence = "太郎はこの本を二郎を見た女性に渡した。"
+sentence = "homebrewのインストールしている，すべてのbrewをアンインストールする"
 
 try:
 
@@ -19,8 +27,9 @@ try:
     while m:
         print(m.surface, "\t", m.feature)
         m = m.next
-        print("EOS")
-        
+#         print("EOS")
+    
+    exit(0)
     lattice = MeCab.Lattice()
     t.parse(lattice)
     lattice.set_sentence(sentence)

@@ -6,14 +6,14 @@ import threading
 
 class DB(object):
     
-    lock = threading.Lock
+    lock = threading.Lock()
     
     def doFromZero(self):
         dbsql = """
             create table test(id int, name text)
         """
         conn = self.getconn()
-        c = self.getcursor()
+        c = conn.cursor()
         c.execute(dbsql)
         conn.commit()
         c.close()
@@ -22,10 +22,7 @@ class DB(object):
         conn = sqlite3.connect(os.path.dirname(__file__) +"/worddb.db")
         return conn
 
-#     def getcursor(self):
-#         conn = self.getconn()
-#         c = conn.cursor()
-#         return c
+
     
     def exesql(self, sql):
         conn = self.getconn()
@@ -33,6 +30,13 @@ class DB(object):
         c.execute(sql)
         conn.commit()
         conn.close()
+        
+    def exeSql(self, sql, data):
+        with (DB.lock):
+            conn = self.getconn()
+            c = conn.cursor()
+            c.execute(sql, data)
+            
         
     def getrawwordbyversion(self,version,cnt):
         with (DB.lock):
