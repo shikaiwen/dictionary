@@ -267,14 +267,7 @@ def testmecab():
 #     a2 = mecab.parse("使うほど、うるおいが満ちる")
     print(a1)
 
-def is_japanese(string):
-    for ch in string:
-        name = unicodedata.name(ch) 
-        if "CJK UNIFIED" in name \
-        or "HIRAGANA" in name \
-        or "KATAKANA" in name:
-            return True
-    return False
+
 
 
 def starturlfetcherthread(starturl):

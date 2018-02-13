@@ -23,6 +23,20 @@ class TaskWashRawLinks(threading.Thread):
                 cur.close()
                 return url
             return ""
+        
+    @classmethod
+    def markprocessedlinkversion(self, link):
+            db = DB()
+            result = False
+            with(DB.lock):
+                conn = db.getconn()
+                cur = conn.cursor()
+                cur.execute("update real_links set version=1 where link= ?",[link])
+                result = (cur.rowcount==1)
+                conn.commit()
+                cur.close()
+            return result   
+    
     def run(self):
         
         
