@@ -5,7 +5,7 @@ import subprocess
 cmdlist = [
     "git add *",
     "git commit -m \"22\" ",
-    "git push"
+    "git push origin master"
     ]
 for i in range(len(cmdlist)):
     exe = cmdlist[i]
