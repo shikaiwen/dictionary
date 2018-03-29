@@ -21,7 +21,6 @@ for i in range(len(cmdlist)):
 # print("$$$$$$$$$$$$$$$ " + str(child.communicate()[0]))
 # print("$$$$$$$$$$$$$$$ " + str(child.returncode))
 
-
 ress = subprocess.check_output("git add *",stderr=subprocess.STDOUT,shell=True)
 print(ress)
 exit()
