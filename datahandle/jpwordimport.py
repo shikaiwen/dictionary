@@ -290,4 +290,5 @@ if __name__ == '__main__':  # Script executed directly?
 #     main()
 #     testmecab()
 #     resp = requests.get("https://qiita.com/kurohune538/items/55d2a9739b1f73363e56")
-    testscraper()
+#     testscraper()
+    loadfrominternel("点滅")

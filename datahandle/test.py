@@ -11,8 +11,10 @@ from openpyxl.xml.constants import MAX_ROW
 from builtins import str
 import re
 from _functools import reduce
+import db 
 
-
+print(__name__)
+print(__file__)
 # map() reduce() filter()
 
 # >>> foo = [2, 18, 9, 22, 17, 24, 8, 12, 27]
@@ -170,5 +172,6 @@ for i in range(1,maxrow):
 #         print("j" + str(j)+ "\t")
 #         sys.stdout.write(".")
 #         sys.stdout.flush()
+        
         
     

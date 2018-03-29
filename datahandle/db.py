@@ -4,6 +4,8 @@ import os
 import json
 import threading
 
+print(__name__)
+
 class DB(object):
     
     lock = threading.Lock()
