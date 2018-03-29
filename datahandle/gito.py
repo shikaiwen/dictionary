@@ -4,12 +4,12 @@ import subprocess
 # print(sys.argv)
 cmdlist = [
     "git add *",
-    "git commit -m \"\" ",
+    "git commit -m \"22\" ",
     "git push"
     ]
 for i in range(len(cmdlist)):
     exe = cmdlist[i]
-    child = subprocess.Popen(exe, stdout = subprocess.PIPE, stderr = subprocess.PIPE, shell=False)
+    child = subprocess.Popen(exe, stdout = subprocess.PIPE, stderr = subprocess.PIPE, shell=True)
 #    None 好像也是成功
     if(child.returncode != 0 and child.returncode != None):  
         print(child.communicate()[0])
