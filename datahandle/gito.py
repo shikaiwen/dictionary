@@ -1,5 +1,6 @@
 import sys
 import subprocess
+from sys import stdin
 
 # print(sys.argv)
 cmdlist = [
@@ -21,7 +22,7 @@ for i in range(len(cmdlist)):
 # print("$$$$$$$$$$$$$$$ " + str(child.communicate()[0]))
 # print("$$$$$$$$$$$$$$$ " + str(child.returncode))
 
-ress = subprocess.check_output("git add *",stderr=subprocess.STDOUT,shell=True)
+ress = subprocess.check_output("git add *",stdout=subprocess.PIPE,stderr=subprocess.STDOUT,stdin=subprocess.PIPE,shell=True)
 print(ress)
 exit()
 
